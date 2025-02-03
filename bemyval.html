@@ -88,13 +88,18 @@
             left: 0;
         }
 
-        img {
+        .initial-image,
+        .response-image {
             width: 100%;
             max-width: 200px;
             height: auto;
-            margin-bottom: 1rem;
-            display: block;
             margin: 0 auto 1rem auto;
+            display: block;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .response-image {
+            display: none;
         }
 
         .hidden {
@@ -105,6 +110,15 @@
             font-size: clamp(1.2rem, 4vw, 1.8rem);
             margin-top: 1.5rem;
             line-height: 1.3;
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         @media (max-width: 480px) {
@@ -126,7 +140,8 @@
 <body>
     <div class="hearts" id="hearts"></div>
     <div class="container">
-        <img src="/api/placeholder/200/200" alt="Valentine Heart">
+        <img src="./seven.png" alt="Valentine Question" class="initial-image" id="initialImage">
+        <img src="./yayyyy.png" alt="Valentine Response" class="response-image" id="responseImage">
         <h1>Will you be my Valentine?</h1>
         <div class="buttons">
             <button id="yesBtn">Yes 💖</button>
@@ -148,6 +163,8 @@
         const yesBtn = document.getElementById('yesBtn');
         const noBtn = document.getElementById('noBtn');
         const response = document.getElementById('response');
+        const initialImage = document.getElementById('initialImage');
+        const responseImage = document.getElementById('responseImage');
 
         function createHeart() {
             const heart = document.createElement('div');
@@ -172,20 +189,23 @@
         yesBtn.addEventListener('click', () => {
             document.querySelector('.buttons').style.display = 'none';
             response.classList.remove('hidden');
-            response.textContent = "Yay! I'm so happy you said yes! 💝";
+            response.textContent = "Yayyy!! 💝";
             response.style.color = '#ff4d6d';
+            
+            // Switch images with fade effect
+            initialImage.style.display = 'none';
+            responseImage.style.display = 'block';
+            responseImage.classList.add('fade-in');
             
             setInterval(createHeart, 300);
         });
 
         if (isMobile()) {
-            // For mobile devices, handle touch events
             noBtn.addEventListener('touchstart', (e) => {
                 e.preventDefault();
                 moveButton();
             });
         } else {
-            // For desktop devices, handle mouse events
             noBtn.addEventListener('mouseover', moveButton);
         }
 
