@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be My Valentine?</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+            background-color: #ffe6e6;
+            margin: 0;
+            text-align: center;
+            padding: 1rem;
+        }
+        
+        .container {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 500px;
+            margin: auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        h1 {
+            color: #ff4d6d;
+            margin-bottom: 1.5rem;
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            line-height: 1.2;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 0.8rem 1.5rem;
+            font-size: clamp(1rem, 4vw, 1.2rem);
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        #yesBtn {
+            background-color: #ff4d6d;
+            color: white;
+            min-width: 100px;
+        }
+
+        #yesBtn:hover, #yesBtn:active {
+            transform: scale(1.1);
+        }
+
+        #noBtn {
+            background-color: #f8f9fa;
+            color: #343a40;
+            min-width: 100px;
+        }
+
+        .hearts {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            top: 0;
+            left: 0;
+        }
+
+        img {
+            width: 100%;
+            max-width: 200px;
+            height: auto;
+            margin-bottom: 1rem;
+            display: block;
+            margin: 0 auto 1rem auto;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #response {
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            margin-top: 1.5rem;
+            line-height: 1.3;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .buttons {
+                gap: 0.8rem;
+            }
+
+            button {
+                padding: 0.7rem 1.2rem;
+                width: 45%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hearts" id="hearts"></div>
+    <div class="container">
+        <img src="/api/placeholder/200/200" alt="Valentine Heart">
+        <h1>Will you be my Valentine?</h1>
+        <div class="buttons">
+            <button id="yesBtn">Yes 💖</button>
+            <button id="noBtn">No 😔</button>
+        </div>
+        <h2 id="response" class="hidden"></h2>
+    </div>
+
+    <script>
+        let noCount = 0;
+        const noBtnPositions = [
+            { top: '70%', left: '60%' },
+            { top: '20%', left: '80%' },
+            { top: '40%', left: '20%' },
+            { top: '80%', left: '30%' },
+            { top: '30%', left: '50%' },
+        ];
+
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const response = document.getElementById('response');
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.innerHTML = '❤️';
+            heart.style.position = 'fixed';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.top = '-20px';
+            heart.style.fontSize = (Math.random() * 20 + 20) + 'px';
+            heart.style.animation = `fall ${Math.random() * 2 + 3}s linear`;
+            heart.style.zIndex = '1';
+            document.getElementById('hearts').appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 5000);
+        }
+
+        function isMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+
+        yesBtn.addEventListener('click', () => {
+            document.querySelector('.buttons').style.display = 'none';
+            response.classList.remove('hidden');
+            response.textContent = "Yay! I'm so happy you said yes! 💝";
+            response.style.color = '#ff4d6d';
+            
+            setInterval(createHeart, 300);
+        });
+
+        if (isMobile()) {
+            // For mobile devices, handle touch events
+            noBtn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                moveButton();
+            });
+        } else {
+            // For desktop devices, handle mouse events
+            noBtn.addEventListener('mouseover', moveButton);
+        }
+
+        function moveButton() {
+            noCount++;
+            if (noCount <= noBtnPositions.length) {
+                const pos = noBtnPositions[noCount - 1];
+                noBtn.style.position = 'absolute';
+                noBtn.style.top = pos.top;
+                noBtn.style.left = pos.left;
+            } else {
+                noBtn.style.display = 'none';
+            }
+        }
+    </script>
+
+    <style>
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+            }
+        }
+    </style>
+</body>
+</html>
